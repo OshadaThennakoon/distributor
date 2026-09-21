@@ -20,6 +20,7 @@ import SimulatorPage from './pages/SimulatorPage.jsx';
 import ReportsHubPage from './pages/ReportsHubPage.jsx';
 import MonthlyReportPage from './pages/MonthlyReportPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+import DailyPerformancePage from './pages/DailyPerformancePage.jsx';
 import MapView from './components/MapView.jsx';
 
 function MainApp() {
@@ -35,6 +36,8 @@ function MainApp() {
     switch (currentView) {
       case 'dashboard':
         return <DashboardPage setCurrentView={setCurrentView} />;
+      case 'daily-operations':
+        return <DailyPerformancePage />;
       case 'distributors':
         return <DistributorsPage />;
       case 'routes':

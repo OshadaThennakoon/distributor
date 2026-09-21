@@ -16,7 +16,7 @@ import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { 
   TrendingUp, DollarSign, Fuel, Navigation, 
   Store, Truck, AlertTriangle, Lightbulb, Compass, 
-  CheckCircle2, Clock, RefreshCw 
+  CheckCircle2, Clock, RefreshCw, Target 
 } from 'lucide-react';
 import KPICard from '../components/KPICard.jsx';
 import api from '../utils/api.js';
@@ -163,6 +163,10 @@ export function DashboardPage({ setCurrentView }) {
           <p>Real-time operational unit economics, route margins, fleet telemetry, and automated financial insights.</p>
         </div>
         <div className="page-actions">
+          <button className="btn btn-secondary" onClick={() => setCurrentView('daily-operations')}>
+            <Target size={14} />
+            <span>Daily Ops & Targets</span>
+          </button>
           <button className="btn btn-secondary" onClick={loadDashboard}>
             <RefreshCw size={14} />
             <span>Refresh Telemetry</span>

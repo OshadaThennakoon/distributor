@@ -9,6 +9,7 @@ import vehicleRoutes from './routes/vehicleRoutes.js';
 import salesRoutes from './routes/salesRoutes.js';
 import financeRoutes from './routes/financeRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
+import dailyOperationsRoutes from './routes/dailyOperationsRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5055;
@@ -35,6 +36,8 @@ app.use('/api', vehicleRoutes);
 app.use('/api', salesRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api', reportRoutes);
+app.use('/api', dailyOperationsRoutes);
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

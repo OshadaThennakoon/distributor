@@ -64,7 +64,7 @@ router.get('/dashboard', authenticate, scopeDistributor, (req, res) => {
   // 6. Net Profit
   const netProfit = salesAgg.total_gross_profit - expAgg.total_expenses;
   const costPerKm = kmAgg.total_km > 0 ? (expAgg.total_expenses / kmAgg.total_km).toFixed(2) : 0;
-  const totalShopVisits = db.prepare(`SELECT COUNT(*) as c FROM shop_visits WHERE status = 'completed' ${distClauseSales}`).get(params).c || 1;
+  const totalShopVisits = db.prepare(`SELECT COUNT(*) as c FROM shop_visits WHERE status = 'completed' ${distId ? 'AND distributor_id = ?' : ''}`).get(distId ? [distId] : []).c || 1;
   const costPerShopVisit = totalShopVisits > 0 ? (expAgg.total_expenses / totalShopVisits).toFixed(2) : 0;
 
   // 7. Monthly Revenue & Profit Trend (Last 6 months)

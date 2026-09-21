@@ -461,6 +461,26 @@ CREATE TABLE IF NOT EXISTS system_settings (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 26. Operational Targets (Sales, Cost, KM)
+CREATE TABLE IF NOT EXISTS targets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    distributor_id INTEGER NOT NULL,
+    target_type TEXT NOT NULL CHECK(target_type IN ('sales', 'cost', 'km')),
+    period_type TEXT NOT NULL CHECK(period_type IN ('daily', 'monthly')),
+    target_period TEXT NOT NULL, -- 'YYYY-MM-DD' for daily or 'YYYY-MM' for monthly
+    route_id INTEGER,
+    vehicle_id INTEGER,
+    driver_id INTEGER,
+    target_value REAL NOT NULL,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE SET NULL,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL,
+    FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL
+);
+
 -- Indexes for lightning-fast multi-tenant queries & financial reports
 CREATE INDEX IF NOT EXISTS idx_distributors_code ON distributors(code);
 CREATE INDEX IF NOT EXISTS idx_dc_distributor ON distribution_centers(distributor_id);
@@ -484,3 +504,5 @@ CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(date);
 CREATE INDEX IF NOT EXISTS idx_maintenance_vehicle ON maintenance(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_maintenance_date ON maintenance(service_date);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_targets_period ON targets(distributor_id, target_period, target_type);
+

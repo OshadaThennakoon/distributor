@@ -7,7 +7,7 @@ export function runSeeder() {
 
   // Clear existing records in proper dependency order
   const tables = [
-    'audit_logs', 'payments', 'sale_items', 'sales', 'odometer_readings',
+    'targets', 'audit_logs', 'payments', 'sale_items', 'sales', 'odometer_readings',
     'fuel_transactions', 'shop_visits', 'maintenance', 'expenses', 'expense_categories',
     'route_runs', 'route_stops', 'shops', 'routes', 'towns', 'territories',
     'distribution_centers', 'vehicles', 'drivers', 'fuel_prices', 'products',
@@ -446,7 +446,30 @@ export function runSeeder() {
     insertMaint.run(3, '2026-06-25', 120000, 'tires', 85000, 5000, 90000, 127500, '2026-11-25', 'Dambulla Tyre House', 'INV-DTH-2341', 'Two rear heavy duty radial tyre replacement');
     insertMaint.run(4, '2026-07-02', 39000, 'routine', 16500, 5500, 22000, 44000, '2026-10-02', 'Mahindra Care Dambulla', 'INV-MAH-1102', 'Engine tuning, filter replacements, suspension check');
 
-    // 16. Audit Log Initial Records
+    // 16. Operational Targets (Sales, Cost, KM - Section 32 & Enhancement)
+    const insertTarget = db.prepare(`
+      INSERT INTO targets (distributor_id, target_type, period_type, target_period, route_id, target_value, notes)
+      VALUES (1, ?, ?, ?, ?, ?, ?)
+    `);
+
+    // Monthly Targets for September 2026
+    insertTarget.run('sales', 'monthly', '2026-09', null, 2500000, 'September 2026 Corporate Sales Target');
+    insertTarget.run('cost', 'monthly', '2026-09', null, 520000, 'September 2026 Operating Cost Budget Cap');
+    insertTarget.run('km', 'monthly', '2026-09', null, 2800, 'September 2026 Fleet Distance Target');
+
+    // Daily Targets for September days
+    const targetDays = ['2026-09-02', '2026-09-04', '2026-09-06', '2026-09-08', '2026-09-10', '2026-09-12', '2026-09-14', '2026-09-16', '2026-09-18', '2026-09-20', '2026-09-21'];
+    for (const d of targetDays) {
+      insertTarget.run('sales', 'daily', d, null, 140000, `Daily Sales Target for ${d}`);
+      insertTarget.run('cost', 'daily', d, null, 24000, `Daily Cost Budget for ${d}`);
+      insertTarget.run('km', 'daily', d, null, 135, `Daily Distance Target for ${d}`);
+    }
+
+    // Route-specific targets for Route 001 and 002
+    insertTarget.run('sales', 'daily', '2026-09-21', 1, 130000, 'Route 001 Galewela Target');
+    insertTarget.run('sales', 'daily', '2026-09-21', 2, 150000, 'Route 002 Dambulla Target');
+
+    // 17. Audit Log Initial Records
     const insertAudit = db.prepare(`
       INSERT INTO audit_logs (user_id, action, entity_type, entity_id, old_values, new_values, ip_address, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)

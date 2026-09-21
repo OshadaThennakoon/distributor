@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Building2, MapPin, Route, Calendar, 
   Store, Truck, UserCheck, Fuel, Wrench, Receipt, Package, 
   Wallet, TrendingUp, BarChart3, FileSpreadsheet, Calculator, 
-  Sliders, Settings, ShieldCheck, Map
+  Sliders, Settings, ShieldCheck, Map, Target
 } from 'lucide-react';
 
 export function Sidebar({ currentView, setCurrentView }) {
@@ -11,7 +11,8 @@ export function Sidebar({ currentView, setCurrentView }) {
     {
       title: 'Overview',
       items: [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'daily-operations', label: 'Daily Ops & Targets', icon: Target }
       ]
     },
     {
