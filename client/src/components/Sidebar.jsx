@@ -35,10 +35,12 @@ export function Sidebar({ currentView, setCurrentView }) {
       ]
     },
     {
-      title: 'Sales & Inventory',
+      title: 'Sales & Invoicing',
       items: [
-        { id: 'sales', label: 'Sales & Invoices', icon: Receipt },
-        { id: 'products', label: 'Products & Stock', icon: Package }
+        { id: 'billing', label: 'Quick Invoice & Billing', icon: Receipt },
+        { id: 'dispatch', label: 'Daily Dispatch Sheet', icon: Truck },
+        { id: 'sales', label: 'Invoices & Orders', icon: Package },
+        { id: 'products', label: 'Jeewaka Herbal Catalog', icon: Package }
       ]
     },
     {
@@ -53,7 +55,7 @@ export function Sidebar({ currentView, setCurrentView }) {
     {
       title: 'Reports & Audits',
       items: [
-        { id: 'reports', label: '20 Financial Reports', icon: FileSpreadsheet },
+        { id: 'reports', label: 'Financial Reports', icon: FileSpreadsheet },
         { id: 'monthly-report', label: 'Monthly Management', icon: BarChart3 },
         { id: 'settings', label: 'Administration & Logs', icon: Settings }
       ]
@@ -63,10 +65,10 @@ export function Sidebar({ currentView, setCurrentView }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div className="logo-badge">OD</div>
+        <div className="logo-badge" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>JH</div>
         <div className="brand-text">
-          <h2>OshadaDistribute</h2>
-          <span>Enterprise Platform</span>
+          <h2>Jeewaka Herbals</h2>
+          <span>Distributor Point ERP</span>
         </div>
       </div>
 

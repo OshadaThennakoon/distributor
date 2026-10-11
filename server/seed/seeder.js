@@ -24,11 +24,11 @@ export function runSeeder() {
 
   db.transaction(() => {
     // 1. System Settings
-    const insertSetting = db.prepare(`INSERT INTO system_settings (key, value, description) VALUES (?, ?, ?)`);
+    const insertSetting = db.prepare(`INSERT INTO system_settings (\`key\`, \`value\`, description) VALUES (?, ?, ?)`);
     insertSetting.run('default_currency', 'LKR', 'Base operational currency');
     insertSetting.run('default_currency_symbol', 'Rs.', 'Base currency symbol');
     insertSetting.run('working_days_per_month', '26', 'Standard operational driver working days');
-    insertSetting.run('company_name', 'OshadaDistribute Platform Ltd', 'Corporate system owner');
+    insertSetting.run('company_name', 'Jeewaka Herbals Distributor Point Ltd', 'Corporate system owner');
 
     // 2. Fuel Prices (Historical Progression)
     const insertFuelPrice = db.prepare(`INSERT INTO fuel_prices (fuel_type, price_per_litre, effective_date, notes) VALUES (?, ?, ?, ?)`);
@@ -44,7 +44,7 @@ export function runSeeder() {
       INSERT INTO distributors (id, code, name, reg_number, contact_person, phone, email, address, currency_code, currency_symbol, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    insertDist.run(1, 'DIST-KEK', 'Example Distributor - Kekirawa', 'PV-98214', 'Nalinda Jayasuriya', '+94 25 226 4890', 'admin@kekirawadist.lk', 'Main Street, Kekirawa, North Central', 'LKR', 'Rs.', 'active');
+    insertDist.run(1, 'DIST-JEEWAKA', 'Jeewaka Herbals Distributor Point - Dambulla Hub', 'PV-98214', 'Nalinda Jayasuriya', '+94 66 228 4890', 'jeewaka.dist@herbals.lk', 'Kurunegala Junction, Dambulla', 'LKR', 'Rs.', 'active');
     insertDist.run(2, 'DIST-COL', 'Colombo Metro Distribution Ltd', 'PV-41092', 'Dinesh Rajapaksha', '+94 11 258 9012', 'operations@colombodist.lk', '140 Baseline Road, Colombo 09', 'LKR', 'Rs.', 'active');
     insertDist.run(3, 'DIST-KAN', 'Hill Country Distributors - Kandy', 'PV-67123', 'A. Wickramasinghe', '+94 81 223 4511', 'kandy@hilldist.lk', 'Peradeniya Road, Kandy', 'LKR', 'Rs.', 'active');
 
@@ -53,8 +53,8 @@ export function runSeeder() {
       INSERT INTO distribution_centers (id, distributor_id, name, code, address, town, district, province, latitude, longitude, contact_number, manager, opening_date, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    insertDc.run(1, 1, 'Kekirawa Central DC', 'DC-KEK-01', 'Old Station Road, Kekirawa', 'Kekirawa', 'Anuradhapura', 'North Central', 8.0433, 80.5922, '+94 25 226 4110', 'Kasun Weerasinghe', '2022-01-15', 'active');
-    insertDc.run(2, 1, 'Dambulla Hub', 'DC-DAM-02', 'Kurunegala Junction, Dambulla', 'Dambulla', 'Matale', 'Central', 7.8742, 80.6511, '+94 66 228 3901', 'Pradeep Kumara', '2023-04-01', 'active');
+    insertDc.run(1, 1, 'Jeewaka Dambulla Regional Hub', 'DC-JEE-01', 'Kurunegala Junction, Dambulla', 'Dambulla', 'Matale', 'Central', 7.8742, 80.6511, '+94 66 228 3901', 'Pradeep Kumara', '2022-01-15', 'active');
+    insertDc.run(2, 1, 'Kekirawa & Madatugama Depot', 'DC-KEK-01', 'Old Station Road, Kekirawa', 'Kekirawa', 'Anuradhapura', 'North Central', 8.0433, 80.5922, '+94 25 226 4110', 'Kasun Weerasinghe', '2023-04-01', 'active');
     insertDc.run(3, 2, 'Colombo Port & City DC', 'DC-COL-01', 'Baseline Road, Orugodawatta', 'Colombo', 'Colombo', 'Western', 6.9412, 79.8821, '+94 11 254 1100', 'Mohamed Rizvi', '2021-08-10', 'active');
     insertDc.run(4, 2, 'Kurunegala Junction DC', 'DC-KUR-01', 'Negombo Road, Kurunegala', 'Kurunegala', 'Kurunegala', 'North Western', 7.4863, 80.3623, '+94 37 222 1980', 'Ravi Senanayake', '2023-01-10', 'active');
     insertDc.run(5, 3, 'Kandy Gatambe DC', 'DC-KAN-01', 'Gatambe, Kandy', 'Kandy', 'Kandy', 'Central', 7.2711, 80.6019, '+94 81 238 7720', 'S. Mahendran', '2022-06-01', 'active');
@@ -64,11 +64,11 @@ export function runSeeder() {
       INSERT INTO territories (id, distributor_id, distribution_center_id, name, code, district, province, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    insertTerritory.run(1, 1, 1, 'Kekirawa Town & Suburbs', 'TER-KEK', 'Anuradhapura', 'North Central', 'active');
-    insertTerritory.run(2, 1, 1, 'Melsiripura', 'TER-MEL', 'Kurunegala', 'North Western', 'active');
-    insertTerritory.run(3, 1, 1, 'Galewela', 'TER-GAL', 'Matale', 'Central', 'active');
-    insertTerritory.run(4, 1, 2, 'Dambulla', 'TER-DAM', 'Matale', 'Central', 'active');
-    insertTerritory.run(5, 1, 2, 'Sigiriya & Habarana', 'TER-SIG', 'Matale', 'Central', 'active');
+    insertTerritory.run(1, 1, 1, 'Madatugama Belt', 'TER-MAD', 'Anuradhapura', 'North Central', 'active');
+    insertTerritory.run(2, 1, 1, 'Melsiripura & Gokarella', 'TER-MEL', 'Kurunegala', 'North Western', 'active');
+    insertTerritory.run(3, 1, 1, 'Naula & Nalanda', 'TER-NAU', 'Matale', 'Central', 'active');
+    insertTerritory.run(4, 1, 1, 'Dambulla City', 'TER-DAM', 'Matale', 'Central', 'active');
+    insertTerritory.run(5, 1, 1, 'Habarana & Forest Belt', 'TER-HAB', 'Matale', 'Central', 'active');
     insertTerritory.run(6, 2, 3, 'Colombo North', 'TER-CLN', 'Colombo', 'Western', 'active');
     insertTerritory.run(7, 2, 3, 'Colombo South', 'TER-CLS', 'Colombo', 'Western', 'active');
     insertTerritory.run(8, 2, 4, 'Kurunegala Town', 'TER-KUR', 'Kurunegala', 'North Western', 'active');
@@ -84,10 +84,10 @@ export function runSeeder() {
       INSERT INTO users (id, username, email, password_hash, full_name, role, distributor_id, is_active)
       VALUES (?, ?, ?, ?, ?, ?, ?, 1)
     `);
-    insertUser.run(1, 'admin', 'admin@oshadadistribute.lk', passwordHash, 'System Administrator', 'ADMIN', null);
-    insertUser.run(2, 'finance', 'finance@kekirawadist.lk', finHash, 'Thilina Hettiarachchi (Finance)', 'FINANCE_USER', 1);
+    insertUser.run(1, 'admin', 'admin@jeewakaherbals.lk', passwordHash, 'Jeewaka Admin', 'ADMIN', null);
+    insertUser.run(2, 'finance', 'finance@jeewakaherbals.lk', finHash, 'Thilina Hettiarachchi (Finance)', 'FINANCE_USER', 1);
     insertUser.run(3, 'colombo_finance', 'fin@colombodist.lk', finHash, 'Niroshan Pieris (Colombo Fin)', 'FINANCE_USER', 2);
-    insertUser.run(4, 'viewer', 'viewer@kekirawadist.lk', viewHash, 'Operations Viewer', 'VIEWER', 1);
+    insertUser.run(4, 'viewer', 'viewer@jeewakaherbals.lk', viewHash, 'Operations Viewer', 'VIEWER', 1);
 
     // 7. Drivers
     const insertDriver = db.prepare(`
@@ -111,45 +111,45 @@ export function runSeeder() {
     insertVehicle.run(4, 1, 'WP-PZ-6294', 'Pickup Truck', 'Mahindra', 'Bolero Maxi', 2022, 'Diesel', 45, 14.0, 13.9, '2022-09-14', 41800, 4, '2027-09-13', '2027-09-13', 5000, 'active');
     insertVehicle.run(5, 1, 'WP-GH-5510', 'Panel Van', 'Toyota', 'TownAce', 2018, 'Petrol', 45, 12.0, 11.6, '2018-05-30', 98700, 5, '2026-10-15', '2026-10-15', 5000, 'active');
 
-    // 9. Product Categories & Products
+    // 9. Product Categories & Products (Tailored for Jeewaka Herbals)
     const insertCat = db.prepare(`INSERT INTO product_categories (id, distributor_id, name, code, description) VALUES (?, ?, ?, ?, ?)`);
-    insertCat.run(1, 1, 'Beverages & Dairy', 'CAT-BEV', 'Teas, coffee, milk powders, and cordials');
-    insertCat.run(2, 1, 'Packaged Foods & Grains', 'CAT-FOOD', 'Biscuits, noodles, pulses, spices');
-    insertCat.run(3, 1, 'Personal Care', 'CAT-PC', 'Soaps, shampoos, oral care products');
-    insertCat.run(4, 1, 'Household Care', 'CAT-HC', 'Detergents, cleaning liquids, matches');
+    insertCat.run(1, 1, 'Ayurvedic Arishta & Asawa', 'CAT-ARI', 'Herbal liquid elixirs, Dasamoola, Ashwagandha, Balarishta');
+    insertCat.run(2, 1, 'Herbal Balms & Medicated Oils', 'CAT-OIL', 'Pinda Thailaya, Siddhalepa Balm, Keshakalpa Hair Oil');
+    insertCat.run(3, 1, 'Paspanguwa & Herbal Teas', 'CAT-TEA', 'Suwadharani Paspanguwa packets, Herbal Infusions, Wellness Teas');
+    insertCat.run(4, 1, 'Personal Care & Hygiene', 'CAT-PC', 'Herbal Toothpastes, Natural Face Creams, Herbal Body Washes');
 
     const insertProd = db.prepare(`
-      INSERT INTO products (id, distributor_id, category_id, product_name, sku, brand, unit, cost_price, selling_price, stock_quantity, min_stock_level, is_active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      INSERT INTO products (id, distributor_id, category_id, product_name, sku, brand, unit, cost_price, selling_price, mrp, batch_number, expiry_date, stock_quantity, min_stock_level, is_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
     `);
-    insertProd.run(1, 1, 1, 'Highland Full Cream Milk Powder 400g', 'SKU-MLK-400', 'Highland', 'packet', 950.00, 1150.00, 650, 50);
-    insertProd.run(2, 1, 1, 'Watawala Ceylon BOPF Tea 400g', 'SKU-TEA-400', 'Watawala', 'packet', 680.00, 850.00, 480, 40);
-    insertProd.run(3, 1, 2, 'Munchee Cream Cracker Family Pack 500g', 'SKU-CRK-500', 'Munchee', 'packet', 390.00, 490.00, 920, 100);
-    insertProd.run(4, 1, 2, 'Ratthi Instant Noodles Chicken 400g', 'SKU-NDL-400', 'Ratthi', 'packet', 280.00, 360.00, 750, 80);
-    insertProd.run(5, 1, 2, 'McCurrie Roasted Curry Powder 100g', 'SKU-SP-100', 'McCurrie', 'packet', 160.00, 220.00, 1100, 120);
-    insertProd.run(6, 1, 2, 'Marina Pure Coconut Cooking Oil 1L', 'SKU-OIL-1L', 'Marina', 'bottle', 620.00, 780.00, 340, 30);
-    insertProd.run(7, 1, 2, 'Tess Jack Mackerel Canned Fish 425g', 'SKU-FSH-425', 'Tess', 'tin', 480.00, 620.00, 510, 50);
-    insertProd.run(8, 1, 3, 'Kohomba Herbal Soap Bar 100g', 'SKU-SOP-100', 'Swadeshi', 'bar', 110.00, 150.00, 1400, 150);
-    insertProd.run(9, 1, 3, 'Clogard Total Toothpaste 120g', 'SKU-TP-120', 'Clogard', 'tube', 190.00, 260.00, 890, 70);
-    insertProd.run(10, 1, 4, 'Sunlight Detergent Powder 1kg', 'SKU-DET-1K', 'Sunlight', 'packet', 420.00, 540.00, 580, 60);
+    insertProd.run(1, 1, 2, 'Jeewaka Pinda Thailaya 100ml', 'JH-OIL-01', 'Jeewaka Herbals', 'bottle', 380.00, 480.00, 580.00, 'JH-2026-B101', '2028-06-30', 650, 50);
+    insertProd.run(2, 1, 3, 'Jeewaka Suwadharani Paspanguwa 50g', 'JH-PAS-02', 'Jeewaka Herbals', 'packet', 180.00, 240.00, 300.00, 'JH-2026-B102', '2027-12-31', 1200, 100);
+    insertProd.run(3, 1, 2, 'Jeewaka Siddhalepa Herbal Balm 50g', 'JH-BLM-03', 'Jeewaka Herbals', 'tin', 220.00, 290.00, 350.00, 'JH-2026-B103', '2028-03-31', 840, 80);
+    insertProd.run(4, 1, 1, 'Jeewaka Dasamoolarishtaya 375ml', 'JH-ARI-04', 'Jeewaka Herbals', 'bottle', 520.00, 660.00, 780.00, 'JH-2026-B104', '2028-10-15', 420, 40);
+    insertProd.run(5, 1, 4, 'Jeewaka Herbal Toothpaste 120g', 'JH-TP-05', 'Jeewaka Herbals', 'tube', 190.00, 250.00, 320.00, 'JH-2026-B105', '2027-08-30', 780, 60);
+    insertProd.run(6, 1, 2, 'Jeewaka Keshakalpa Herbal Hair Oil 100ml', 'JH-HAIR-06', 'Jeewaka Herbals', 'bottle', 350.00, 450.00, 550.00, 'JH-2026-B106', '2028-01-20', 510, 50);
+    insertProd.run(7, 1, 1, 'Jeewaka Herbal Cough Syrup 100ml', 'JH-SYR-07', 'Jeewaka Herbals', 'bottle', 280.00, 360.00, 440.00, 'JH-2026-B107', '2027-11-15', 320, 40);
+    insertProd.run(8, 1, 1, 'Jeewaka Ashwagandharishta 375ml', 'JH-ARI-08', 'Jeewaka Herbals', 'bottle', 560.00, 700.00, 820.00, 'JH-2026-B108', '2028-09-30', 390, 35);
+    insertProd.run(9, 1, 4, 'Jeewaka Herbal Face Cream 50g', 'JH-CRM-09', 'Jeewaka Herbals', 'jar', 340.00, 440.00, 540.00, 'JH-2026-B109', '2027-07-31', 280, 30);
+    insertProd.run(10, 1, 3, 'Jeewaka Suwatha Herbal Tea (Pack of 20)', 'JH-TEA-10', 'Jeewaka Herbals', 'box', 320.00, 420.00, 520.00, 'JH-2026-B110', '2028-05-15', 600, 50);
 
-    // 10. 15 Routes for Kekirawa Distributor
+    // 10. 15 Routes Tailored for Jeewaka Wholesale Distribution
     const routesData = [
-      { id: 1, name: 'Route 001 - Kekirawa to Galewela Via Small Towns', code: 'R-001', dist: 125, time: 240, shops: 8, vId: 1, dId: 1, terr: 3 },
-      { id: 2, name: 'Route 002 - Kekirawa to Dambulla Commercial Hub', code: 'R-002', dist: 135, time: 270, shops: 9, vId: 1, dId: 1, terr: 4 },
-      { id: 3, name: 'Route 003 - Kekirawa to Sigiriya Tourism & Farm Belt', code: 'R-003', dist: 140, time: 280, shops: 7, vId: 2, dId: 2, terr: 5 },
-      { id: 4, name: 'Route 004 - Kekirawa to Melsiripura Highway Run', code: 'R-004', dist: 155, time: 310, shops: 8, vId: 2, dId: 2, terr: 2 },
-      { id: 5, name: 'Route 005 - Kekirawa Town Local Circuit', code: 'R-005', dist: 95, time: 180, shops: 10, vId: 4, dId: 4, terr: 1 },
-      { id: 6, name: 'Route 006 - Habarana Forest Border Outlets', code: 'R-006', dist: 145, time: 290, shops: 6, vId: 3, dId: 3, terr: 5 },
-      { id: 7, name: 'Route 007 - Galewela East Rural Groceries', code: 'R-007', dist: 130, time: 260, shops: 7, vId: 1, dId: 1, terr: 3 },
-      { id: 8, name: 'Route 008 - Dambulla Wholesale Market Link', code: 'R-008', dist: 110, time: 220, shops: 11, vId: 3, dId: 3, terr: 4 },
-      { id: 9, name: 'Route 009 - Melsiripura South Estates Line', code: 'R-009', dist: 165, time: 330, shops: 6, vId: 4, dId: 4, terr: 2 },
-      { id: 10, name: 'Route 010 - Kekirawa North Tank Cascade Villages', code: 'R-010', dist: 115, time: 230, shops: 7, vId: 5, dId: 5, terr: 1 },
-      { id: 11, name: 'Route 011 - Inamaluwa & Kandalama Resorts Line', code: 'R-011', dist: 138, time: 275, shops: 6, vId: 5, dId: 5, terr: 4 },
-      { id: 12, name: 'Route 012 - Pallepola & Bambaragaswewa Circuit', code: 'R-012', dist: 142, time: 285, shops: 7, vId: 2, dId: 2, terr: 3 },
-      { id: 13, name: 'Route 013 - Madatugama Agrarian Feeders', code: 'R-013', dist: 105, time: 210, shops: 8, vId: 1, dId: 1, terr: 1 },
-      { id: 14, name: 'Route 014 - Naula Boundary Connector', code: 'R-014', dist: 150, time: 300, shops: 6, vId: 4, dId: 4, terr: 3 },
-      { id: 15, name: 'Route 015 - Digampathana Crosslink Express', code: 'R-015', dist: 128, time: 255, shops: 7, vId: 3, dId: 3, terr: 5 }
+      { id: 1, name: 'Melsiripura Route (Omaragolla, Gokarella, Madahapola)', code: 'R-MEL', dist: 125, time: 240, shops: 8, vId: 1, dId: 1, terr: 2 },
+      { id: 2, name: 'Naula Route (Naula Town, Nalanda, Bowatenna)', code: 'R-NAU', dist: 135, time: 270, shops: 9, vId: 1, dId: 1, terr: 3 },
+      { id: 3, name: 'Habarana Route (Habarana Town, Palugaswewa, Hiriwadunna)', code: 'R-HAB', dist: 140, time: 280, shops: 7, vId: 2, dId: 2, terr: 5 },
+      { id: 4, name: 'Madatugama Route (Madatugama, Galkiriyagama, Awukana)', code: 'R-MAD', dist: 105, time: 210, shops: 8, vId: 2, dId: 2, terr: 1 },
+      { id: 5, name: 'Dambulla Commercial Center Circuit', code: 'R-DAM', dist: 95, time: 180, shops: 10, vId: 4, dId: 4, terr: 4 },
+      { id: 6, name: 'Sigiriya Tourism & Herbal Centers Line', code: 'R-SIG', dist: 145, time: 290, shops: 6, vId: 3, dId: 3, terr: 5 },
+      { id: 7, name: 'Galewela Central & Rural Groceries', code: 'R-GAL', dist: 130, time: 260, shops: 7, vId: 1, dId: 1, terr: 3 },
+      { id: 8, name: 'Dambulla Wholesale Market Link', code: 'R-008', dist: 110, time: 220, shops: 11, vId: 3, dId: 3, terr: 4 },
+      { id: 9, name: 'Melsiripura South Estates Line', code: 'R-009', dist: 165, time: 330, shops: 6, vId: 4, dId: 4, terr: 2 },
+      { id: 10, name: 'Kekirawa North Tank Cascade Villages', code: 'R-010', dist: 115, time: 230, shops: 7, vId: 5, dId: 5, terr: 1 },
+      { id: 11, name: 'Inamaluwa & Kandalama Resorts Line', code: 'R-011', dist: 138, time: 275, shops: 6, vId: 5, dId: 5, terr: 4 },
+      { id: 12, name: 'Pallepola & Bambaragaswewa Circuit', code: 'R-012', dist: 142, time: 285, shops: 7, vId: 2, dId: 2, terr: 3 },
+      { id: 13, name: 'Madatugama Agrarian Feeders Line 2', code: 'R-013', dist: 105, time: 210, shops: 8, vId: 1, dId: 1, terr: 1 },
+      { id: 14, name: 'Naula Boundary Connector & Estates', code: 'R-014', dist: 150, time: 300, shops: 6, vId: 4, dId: 4, terr: 3 },
+      { id: 15, name: 'Digampathana Crosslink Express', code: 'R-015', dist: 128, time: 255, shops: 7, vId: 3, dId: 3, terr: 5 }
     ];
 
     const insertRoute = db.prepare(`
@@ -164,15 +164,15 @@ export function runSeeder() {
       insertRoute.run(r.id, r.terr, r.name, r.code, r.dist, r.time, r.shops, r.vId, r.dId);
     }
 
-    // 11. 100 Real Sri Lankan Shops
+    // 11. 100 Real Sri Lankan Retail Shops, Pharmacies & Ayurvedic Outlets
     const shopNames = [
-      'Nimal Grocery & Tea Room', 'Shantha Super Stores', 'Wijaya General Traders', 'Sigiriya Farm Fresh Shop',
-      'Dambulla Veg Mart', 'Sunitha Family Pharmacy', 'Central City Bakers', 'Randika Wholesale Mart',
-      'Jayalath Stores', 'Perera & Sons Franchise', 'Kumara Mini Super', 'Bandara Enterprises',
-      'Samanala Grocery', 'New Lucky Stores', 'Kekirawa Co-op Outlet', 'Melsiripura Green Grocer',
-      'Galewela Sunrise Store', 'Habarana Express Shop', 'Kandalama Lake Mart', 'Inamaluwa Corner Shop',
-      'Lanka Super Centre', 'Nuwara Traders', 'Rathnayake Food Mart', 'Pradeep Stores',
-      'Sirisena Provisions', 'Golden Star Supermarket', 'Ritz Mini Mart', 'Mahaweli Agro Mart',
+      'Singhe Pharmacy & Wellness', 'Jeewaka Osu Sala - Melsiripura', 'Wijaya General Traders', 'Sigiriya Herbal Care',
+      'Dambulla Ayurvedic Mart', 'Sunitha Family Pharmacy', 'Central MediCare Store', 'Randika Wholesale Mart',
+      'Jayalath Grocery & Herbs', 'Naula Osu Sewaya', 'Kumara Mini Super', 'Bandara Ayurvedic Dispensary',
+      'Samanala Grocery', 'New Lucky Stores', 'Madatugama Co-op Pharmacy', 'Melsiripura Green Grocer',
+      'Galewela MediCare Pharmacy', 'Habarana Express Pharmacy', 'Kandalama Wellness Mart', 'Inamaluwa Corner Shop',
+      'Lanka Ayurvedic Centre', 'Nuwara Traders', 'Rathnayake Food Mart', 'Pradeep Pharmacy',
+      'Sirisena Provisions', 'Golden Star Supermarket', 'Habarana Herbal Garden Mart', 'Mahaweli Agro Mart',
       'Thilaka Bakers & Grocery', 'Nalanda Trade Centre', 'Dambulu City Store', 'Priyanka Pharmacy',
       'Dammika Enterprises', 'Anuradha Stores', 'Gamage Food City', 'Subhasiri Grocery',
       'Devon Express Shop', 'Ruwan Mini Market', 'Sarath Trade Centre', 'Nilmini Stores',
@@ -193,13 +193,31 @@ export function runSeeder() {
       'Chinthaka Super', 'Kasun Traders', 'Mahesh Grocery', 'Sanjeevi Family Mart'
     ];
 
-    const customerTypes = ['Retail shop', 'Grocery', 'Supermarket', 'Pharmacy', 'Restaurant', 'Retail shop', 'Grocery'];
+    const customerTypes = ['Pharmacy', 'Retail shop', 'Grocery', 'Supermarket', 'Pharmacy', 'Retail shop', 'Grocery'];
     const insertShop = db.prepare(`
       INSERT INTO shops (
         id, distributor_id, territory_id, route_id, shop_name, shop_code, owner_name,
         telephone, address, town, district, latitude, longitude, customer_type, credit_limit, payment_terms_days, status
       ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
     `);
+
+    const routeTownMap = {
+      1: 'Melsiripura',
+      2: 'Naula',
+      3: 'Habarana',
+      4: 'Madatugama',
+      5: 'Dambulla',
+      6: 'Sigiriya',
+      7: 'Galewela',
+      8: 'Dambulla',
+      9: 'Melsiripura',
+      10: 'Kekirawa',
+      11: 'Kandalama',
+      12: 'Pallepola',
+      13: 'Madatugama',
+      14: 'Naula',
+      15: 'Habarana'
+    };
 
     let shopIdCounter = 1;
     for (let i = 0; i < 100; i++) {
@@ -211,11 +229,12 @@ export function runSeeder() {
       const name = shopNames[i];
       const owner = `Mr. ${name.split(' ')[0]} ${name.split(' ')[1] || 'Perera'}`;
       const phone = `+94 77 ${1000000 + i * 478}`;
-      // Coordinates around Kekirawa / Dambulla
       const lat = 7.85 + (i % 10) * 0.035;
       const lng = 80.55 + (Math.floor(i / 10)) * 0.030;
       const creditLimit = (20000 + (i % 8) * 15000);
       const terms = i % 2 === 0 ? 14 : 21;
+      const town = routeTownMap[routeIdx] || 'Dambulla';
+      const district = ['Melsiripura'].includes(town) ? 'Kurunegala' : (['Habarana', 'Madatugama', 'Kekirawa'].includes(town) ? 'Anuradhapura' : 'Matale');
 
       insertShop.run(
         shopIdCounter,
@@ -226,8 +245,8 @@ export function runSeeder() {
         owner,
         phone,
         `No. ${i + 12}, Main Road`,
-        rData.name.split(' ')[2] || 'Kekirawa',
-        'Anuradhapura',
+        town,
+        district,
         lat,
         lng,
         type,

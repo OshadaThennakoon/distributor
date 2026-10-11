@@ -230,4 +230,125 @@ router.post('/payments', authenticate, (req, res) => {
   res.status(201).json({ id: result.lastInsertRowid, message: 'Payment recorded successfully' });
 });
 
+// POST /api/products/:id/stock (Stock In from Jeewaka main warehouse vs Stock Out)
+router.post('/products/:id/stock', authenticate, (req, res) => {
+  const id = Number(req.params.id);
+  const { type, quantity, batch_number, expiry_date, notes } = req.body;
+  const qty = Number(quantity);
+  if (!qty || qty <= 0) return res.status(400).json({ error: 'Valid quantity is required' });
+
+  const prod = db.prepare(`SELECT * FROM products WHERE id = ?`).get(id);
+  if (!prod) return res.status(404).json({ error: 'Product not found' });
+
+  let newQty = prod.stock_quantity;
+  if (type === 'in') {
+    newQty += qty;
+  } else if (type === 'out') {
+    if (prod.stock_quantity < qty) {
+      return res.status(400).json({ error: `Insufficient stock! Current stock: ${prod.stock_quantity}` });
+    }
+    newQty -= qty;
+  } else {
+    return res.status(400).json({ error: "Invalid type. Must be 'in' or 'out'" });
+  }
+
+  db.prepare(`
+    UPDATE products 
+    SET stock_quantity = ?,
+        batch_number = COALESCE(?, batch_number),
+        expiry_date = COALESCE(?, expiry_date),
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `).run(newQty, batch_number || null, expiry_date || null, id);
+
+  logAudit(req.user.id, `STOCK_${type.toUpperCase()}`, 'products', id, { stock: prod.stock_quantity }, { newStock: newQty, qty, batch: batch_number, notes }, req.ip);
+
+  res.json({
+    id,
+    product_name: prod.product_name,
+    type,
+    quantity: qty,
+    old_stock: prod.stock_quantity,
+    current_stock: newQty,
+    batch_number: batch_number || prod.batch_number,
+    message: `Stock ${type === 'in' ? 'Received (Stock In)' : 'Dispatched (Stock Out)'} successfully`
+  });
+});
+
+// GET /api/dispatch/sheet (Daily Driver/Rider Dispatch & Packing Sheet)
+router.get('/dispatch/sheet', authenticate, (req, res) => {
+  const { routeId, date } = req.query;
+  const targetDate = date || new Date().toISOString().split('T')[0];
+
+  let sql = `
+    SELECT 
+      s.id as sale_id,
+      s.invoice_number,
+      s.date,
+      s.net_sales,
+      s.payment_type,
+      s.collection_status,
+      sh.shop_name,
+      sh.shop_code,
+      sh.telephone,
+      sh.address,
+      sh.town,
+      r.route_name,
+      r.route_code,
+      v.vehicle_number,
+      dr.full_name as driver_name
+    FROM sales s
+    JOIN shops sh ON s.shop_id = sh.id
+    LEFT JOIN routes r ON s.route_id = r.id
+    LEFT JOIN vehicles v ON r.vehicle_id = v.id
+    LEFT JOIN drivers dr ON r.driver_id = dr.id
+    WHERE 1=1
+  `;
+  const params = [];
+  if (routeId && routeId !== 'all') {
+    sql += ` AND s.route_id = ?`;
+    params.push(Number(routeId));
+  }
+  if (targetDate) {
+    sql += ` AND s.date = ?`;
+    params.push(targetDate);
+  }
+
+  sql += ` ORDER BY s.id ASC`;
+  const orders = db.prepare(sql).all(params);
+
+  // Group all items across these orders to create aggregate Packing List
+  const saleIds = orders.map(o => o.sale_id);
+  let packingList = [];
+  if (saleIds.length > 0) {
+    const placeholders = saleIds.map(() => '?').join(',');
+    const itemsSql = `
+      SELECT 
+        p.id as product_id,
+        p.product_name,
+        p.sku,
+        p.unit,
+        p.batch_number,
+        p.expiry_date,
+        SUM(si.quantity) as total_quantity,
+        SUM(si.net_amount) as total_value
+      FROM sale_items si
+      JOIN products p ON si.product_id = p.id
+      WHERE si.sale_id IN (${placeholders})
+      GROUP BY p.id
+      ORDER BY p.product_name ASC
+    `;
+    packingList = db.prepare(itemsSql).all(saleIds);
+  }
+
+  res.json({
+    date: targetDate,
+    routeId: routeId || 'all',
+    total_orders: orders.length,
+    total_invoice_value: orders.reduce((acc, o) => acc + (o.net_sales || 0), 0),
+    packing_list: packingList,
+    orders
+  });
+});
+
 export default router;

@@ -21,6 +21,8 @@ import ReportsHubPage from './pages/ReportsHubPage.jsx';
 import MonthlyReportPage from './pages/MonthlyReportPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import DailyPerformancePage from './pages/DailyPerformancePage.jsx';
+import QuickBillingPage from './pages/QuickBillingPage.jsx';
+import DailyDispatchPage from './pages/DailyDispatchPage.jsx';
 import MapView from './components/MapView.jsx';
 
 function MainApp() {
@@ -64,6 +66,10 @@ function MainApp() {
         return <VehiclesPage />;
       case 'fuel':
         return <FuelManagementPage />;
+      case 'billing':
+        return <QuickBillingPage />;
+      case 'dispatch':
+        return <DailyDispatchPage />;
       case 'sales':
       case 'products':
         return <SalesPage />;

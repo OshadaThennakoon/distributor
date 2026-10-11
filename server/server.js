@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { initDatabase } from './config/database.js';
+import { initDatabase, checkDatabaseConnection } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import distributorRoutes from './routes/distributorRoutes.js';
 import routeRoutes from './routes/routeRoutes.js';
@@ -24,8 +25,9 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Initialize SQLite Schema
+// Initialize SQLite Schema & Verify DB Connectivity
 initDatabase();
+checkDatabaseConnection();
 
 // API Routes
 app.use('/api/auth', authRoutes);

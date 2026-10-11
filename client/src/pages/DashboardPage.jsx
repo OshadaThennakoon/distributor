@@ -159,21 +159,23 @@ export function DashboardPage({ setCurrentView }) {
       {/* Header */}
       <div className="page-header">
         <div className="page-title">
-          <h1>Corporate Distribution & Financial Intelligence</h1>
-          <p>Real-time operational unit economics, route margins, fleet telemetry, and automated financial insights.</p>
+          <h1>🌿 Jeewaka Herbals Executive Distribution Dashboard</h1>
+          <p>Real-time wholesale sales (LKR), route profitability (Melsiripura, Naula, Habarana, Madatugama), low-stock monitoring, and fleet performance.</p>
         </div>
         <div className="page-actions">
+          <button className="btn btn-primary" onClick={() => setCurrentView('billing')}>
+            <span>⚡ Quick Invoicing</span>
+          </button>
+          <button className="btn btn-secondary" onClick={() => setCurrentView('dispatch')}>
+            <span>📦 Daily Dispatch</span>
+          </button>
           <button className="btn btn-secondary" onClick={() => setCurrentView('daily-operations')}>
             <Target size={14} />
-            <span>Daily Ops & Targets</span>
+            <span>Daily Targets</span>
           </button>
           <button className="btn btn-secondary" onClick={loadDashboard}>
             <RefreshCw size={14} />
-            <span>Refresh Telemetry</span>
-          </button>
-          <button className="btn btn-primary" onClick={() => setCurrentView('simulator')}>
-            <Compass size={14} />
-            <span>What-If Simulator</span>
+            <span>Refresh</span>
           </button>
         </div>
       </div>
