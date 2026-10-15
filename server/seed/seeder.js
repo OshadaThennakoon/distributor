@@ -7,11 +7,11 @@ export function runSeeder() {
 
   // Clear existing records in proper dependency order
   const tables = [
-    'targets', 'audit_logs', 'payments', 'sale_items', 'sales', 'odometer_readings',
+    'targets', 'audit_logs', 'stock_movements', 'cash_drawer_logs', 'payments', 'sale_items', 'sales', 'odometer_readings',
     'fuel_transactions', 'shop_visits', 'maintenance', 'expenses', 'expense_categories',
     'route_runs', 'route_stops', 'shops', 'routes', 'towns', 'territories',
     'distribution_centers', 'vehicles', 'drivers', 'fuel_prices', 'products',
-    'product_categories', 'users', 'distributors', 'system_settings'
+    'product_categories', 'bank_accounts', 'users', 'distributors', 'system_settings'
   ];
 
   db.transaction(() => {
@@ -128,10 +128,12 @@ export function runSeeder() {
     insertProd.run(4, 1, 1, 'Jeewaka Dasamoolarishtaya 375ml', 'JH-ARI-04', 'Jeewaka Herbals', 'bottle', 520.00, 660.00, 780.00, 'JH-2026-B104', '2028-10-15', 420, 40);
     insertProd.run(5, 1, 4, 'Jeewaka Herbal Toothpaste 120g', 'JH-TP-05', 'Jeewaka Herbals', 'tube', 190.00, 250.00, 320.00, 'JH-2026-B105', '2027-08-30', 780, 60);
     insertProd.run(6, 1, 2, 'Jeewaka Keshakalpa Herbal Hair Oil 100ml', 'JH-HAIR-06', 'Jeewaka Herbals', 'bottle', 350.00, 450.00, 550.00, 'JH-2026-B106', '2028-01-20', 510, 50);
-    insertProd.run(7, 1, 1, 'Jeewaka Herbal Cough Syrup 100ml', 'JH-SYR-07', 'Jeewaka Herbals', 'bottle', 280.00, 360.00, 440.00, 'JH-2026-B107', '2027-11-15', 320, 40);
+    insertProd.run(7, 1, 1, 'Jeewaka Herbal Cough Syrup 100ml', 'JH-SYR-07', 'Jeewaka Herbals', 'bottle', 280.00, 360.00, 440.00, 'JH-2026-B107', '2026-11-20', 25, 40);
     insertProd.run(8, 1, 1, 'Jeewaka Ashwagandharishta 375ml', 'JH-ARI-08', 'Jeewaka Herbals', 'bottle', 560.00, 700.00, 820.00, 'JH-2026-B108', '2028-09-30', 390, 35);
-    insertProd.run(9, 1, 4, 'Jeewaka Herbal Face Cream 50g', 'JH-CRM-09', 'Jeewaka Herbals', 'jar', 340.00, 440.00, 540.00, 'JH-2026-B109', '2027-07-31', 280, 30);
+    insertProd.run(9, 1, 4, 'Jeewaka Herbal Face Cream 50g', 'JH-CRM-09', 'Jeewaka Herbals', 'jar', 340.00, 440.00, 540.00, 'JH-2026-B109', '2026-12-15', 18, 30);
     insertProd.run(10, 1, 3, 'Jeewaka Suwatha Herbal Tea (Pack of 20)', 'JH-TEA-10', 'Jeewaka Herbals', 'box', 320.00, 420.00, 520.00, 'JH-2026-B110', '2028-05-15', 600, 50);
+    insertProd.run(11, 1, 1, 'Jeewaka Balarishta 375ml', 'JH-ARI-11', 'Jeewaka Herbals', 'bottle', 540.00, 680.00, 800.00, 'JH-2026-B111', '2028-04-10', 310, 40);
+    insertProd.run(12, 1, 2, 'Jeewaka Neelyadi Herbal Hair Tonic 150ml', 'JH-TON-12', 'Jeewaka Herbals', 'bottle', 410.00, 520.00, 620.00, 'JH-2026-B112', '2027-10-30', 14, 45);
 
     // 10. 15 Routes Tailored for Jeewaka Wholesale Distribution
     const routesData = [
@@ -287,6 +289,36 @@ export function runSeeder() {
     insertExpCat.run(9, 'Vehicle Insurance & Licenses', 'EXP-INS', 1, 1, 1);
     insertExpCat.run(10, 'General Administration & Misc', 'EXP-GEN', 1, 1, 0);
 
+    // 13.5 Bank Accounts & Initial Cash Float
+    const insertBank = db.prepare(`
+      INSERT INTO bank_accounts (id, distributor_id, account_name, account_number, bank_name, branch, initial_balance, current_balance, is_active)
+      VALUES (?, 1, ?, ?, ?, ?, ?, ?, 1)
+    `);
+    insertBank.run(1, 'Jeewaka Herbals Central Operational A/C', '1000-4829-9182', 'Commercial Bank of Ceylon', 'Dambulla Super Grade', 1250000, 1850000);
+    insertBank.run(2, 'Jeewaka Herbals Secondary Collections A/C', '0082-7391-0234', 'Bank of Ceylon (BOC)', 'Kekirawa Main Branch', 650000, 920000);
+    insertBank.run(3, 'Jeewaka Herbals Emergency Reserve A/C', '0429-1827-4100', 'Hatton National Bank (HNB)', 'Kurunegala City Branch', 300000, 450000);
+
+    const insertCashLog = db.prepare(`
+      INSERT INTO cash_drawer_logs (distributor_id, transaction_type, amount, reason, performed_by, date)
+      VALUES (1, ?, ?, ?, ?, ?)
+    `);
+    insertCashLog.run('cash_in', 100000, 'Cash Drawer Initial Opening Float & Safe Deposit', 'Admin', '2026-03-01');
+    insertCashLog.run('cash_out', 15000, 'Office Emergency Supplies & Refreshments', 'Thilina (Finance)', '2026-09-18');
+
+    // 13.6 Stock Movements & Factory Inward Consignments
+    const insertStockMove = db.prepare(`
+      INSERT INTO stock_movements (
+        distributor_id, product_id, movement_type, quantity,
+        previous_stock, new_stock, unit_cost, batch_number, expiry_date,
+        reference_number, performed_by, notes, date
+      ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    insertStockMove.run(1, 'INWARD_GRN', 200, 450, 650, 380.00, 'JH-2026-B101', '2028-06-30', 'GRN-2026-0891', 'Nalinda (Hub Mgr)', 'Jeewaka Herbal Factory Palugaswewa Delivery', '2026-09-02');
+    insertStockMove.run(2, 'INWARD_GRN', 500, 700, 1200, 180.00, 'JH-2026-B102', '2027-12-31', 'GRN-2026-0892', 'Nalinda (Hub Mgr)', 'Bulk Seasonal Paspanguwa Consignment', '2026-09-05');
+    insertStockMove.run(7, 'DAMAGE_DISPOSAL', 5, 30, 25, 280.00, 'JH-2026-B107', '2026-11-20', 'DMG-2026-012', 'Warehouse Supervisor', 'Bottles broken during transit/handling', '2026-09-12');
+    insertStockMove.run(5, 'INWARD_GRN', 300, 480, 780, 190.00, 'JH-2026-B105', '2027-08-30', 'GRN-2026-0914', 'Nalinda (Hub Mgr)', 'Central Distribution replenishment', '2026-09-16');
+    insertStockMove.run(9, 'AUDIT_CORRECTION', 2, 20, 18, 340.00, 'JH-2026-B109', '2026-12-15', 'AUD-2026-004', 'Thilina (Finance)', 'Physical audit count variance correction', '2026-09-20');
+
     // 14. 6 Months Historical Data (March 2026 to August 2026 + September 2026 current)
     console.log('Generating 6 months of historical transactions (Sales, Payments, Fuel, Runs, Expenses, Visits)...');
 
@@ -304,8 +336,10 @@ export function runSeeder() {
     `);
 
     const insertPayment = db.prepare(`
-      INSERT INTO payments (sale_id, distributor_id, payment_date, amount, payment_method, receipt_number)
-      VALUES (?, 1, ?, ?, ?, ?)
+      INSERT INTO payments (
+        sale_id, distributor_id, payment_date, amount, payment_method, receipt_number,
+        cheque_number, cheque_date, bank_name, cheque_status, bank_account_id
+      ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const insertVisit = db.prepare(`
@@ -439,7 +473,35 @@ export function runSeeder() {
 
           // Payment record if paid
           if (isPaid) {
-            insertPayment.run(saleId, dateStr, netSales, 'cash', `RCP-PAY-${saleId}`);
+            const pMod = (saleId + sh.id) % 10;
+            if (pMod < 5) {
+              // 50% Cash payments
+              insertPayment.run(saleId, dateStr, netSales, 'cash', `RCP-PAY-${saleId}`, null, null, null, null, null);
+            } else if (pMod < 8) {
+              // 30% Cheque payments
+              const chqNum = `CHQ-${700000 + saleId}`;
+              const bankOptions = ['Commercial Bank', 'Bank of Ceylon', 'Sampath Bank', 'Hatton National Bank', 'Seylan Bank'];
+              const bName = bankOptions[(saleId + sh.id) % bankOptions.length];
+
+              let chqStatus = 'cleared';
+              let targetBankId = ((saleId % 2) + 1);
+
+              if (isCurrent) {
+                if (saleId % 4 === 0) {
+                  chqStatus = 'cleared';
+                } else if (saleId % 9 === 0) {
+                  chqStatus = 'bounced';
+                  targetBankId = null;
+                } else {
+                  chqStatus = 'pending';
+                  targetBankId = null;
+                }
+              }
+              insertPayment.run(saleId, dateStr, netSales, 'cheque', `RCP-PAY-${saleId}`, chqNum, dateStr, bName, chqStatus, targetBankId);
+            } else {
+              // 20% Direct Bank Transfer
+              insertPayment.run(saleId, dateStr, netSales, 'bank_transfer', `RCP-PAY-${saleId}`, null, null, 'Direct Bank Deposit', 'cleared', 1);
+            }
           }
 
           // Shop Visit record

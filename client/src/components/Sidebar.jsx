@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Building2, MapPin, Route, Calendar, 
   Store, Truck, UserCheck, Fuel, Wrench, Receipt, Package, 
   Wallet, TrendingUp, BarChart3, FileSpreadsheet, Calculator, 
-  Sliders, Settings, ShieldCheck, Map, Target
+  Sliders, Settings, ShieldCheck, Map, Target, Landmark, Boxes
 } from 'lucide-react';
 
 export function Sidebar({ currentView, setCurrentView }) {
@@ -35,8 +35,9 @@ export function Sidebar({ currentView, setCurrentView }) {
       ]
     },
     {
-      title: 'Sales & Invoicing',
+      title: 'Sales & Inventory',
       items: [
+        { id: 'stock', label: 'Stock & Inventory Hub', icon: Boxes },
         { id: 'billing', label: 'Quick Invoice & Billing', icon: Receipt },
         { id: 'dispatch', label: 'Daily Dispatch Sheet', icon: Truck },
         { id: 'sales', label: 'Invoices & Orders', icon: Package },
@@ -46,6 +47,7 @@ export function Sidebar({ currentView, setCurrentView }) {
     {
       title: 'Financial Intelligence',
       items: [
+        { id: 'accounts', label: 'Treasury & Accounts Hub', icon: Landmark },
         { id: 'expenses', label: 'Expense Management', icon: Wallet },
         { id: 'profitability', label: 'Route Profitability', icon: TrendingUp },
         { id: 'break-even', label: 'Break-Even Calculator', icon: Calculator },

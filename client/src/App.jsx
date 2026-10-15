@@ -23,6 +23,8 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import DailyPerformancePage from './pages/DailyPerformancePage.jsx';
 import QuickBillingPage from './pages/QuickBillingPage.jsx';
 import DailyDispatchPage from './pages/DailyDispatchPage.jsx';
+import AccountsPage from './pages/AccountsPage.jsx';
+import StockManagementPage from './pages/StockManagementPage.jsx';
 import MapView from './components/MapView.jsx';
 
 function MainApp() {
@@ -70,9 +72,13 @@ function MainApp() {
         return <QuickBillingPage />;
       case 'dispatch':
         return <DailyDispatchPage />;
-      case 'sales':
+      case 'stock':
       case 'products':
+        return <StockManagementPage />;
+      case 'sales':
         return <SalesPage />;
+      case 'accounts':
+        return <AccountsPage />;
       case 'expenses':
         return <ExpensesPage />;
       case 'profitability':

@@ -163,6 +163,12 @@ export function DashboardPage({ setCurrentView }) {
           <p>Real-time wholesale sales (LKR), route profitability (Melsiripura, Naula, Habarana, Madatugama), low-stock monitoring, and fleet performance.</p>
         </div>
         <div className="page-actions">
+          <button className="btn btn-primary" onClick={() => setCurrentView('stock')} style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' }}>
+            <span>📦 Stock & Inventory</span>
+          </button>
+          <button className="btn btn-primary" onClick={() => setCurrentView('accounts')} style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
+            <span>🏦 Accounts & Cash Hub</span>
+          </button>
           <button className="btn btn-primary" onClick={() => setCurrentView('billing')}>
             <span>⚡ Quick Invoicing</span>
           </button>

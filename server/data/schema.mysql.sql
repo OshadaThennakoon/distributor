@@ -345,6 +345,12 @@ CREATE TABLE IF NOT EXISTS payments (
     payment_date DATE NOT NULL,
     amount DOUBLE NOT NULL,
     payment_method ENUM('cash', 'cheque', 'bank_transfer', 'other') DEFAULT 'cash',
+    cheque_number VARCHAR(100),
+    cheque_date DATE,
+    bank_name VARCHAR(100),
+    cheque_status ENUM('pending', 'cleared', 'bounced', 'deposited') DEFAULT 'pending',
+    cleared_date DATE,
+    bank_account_id INT,
     receipt_number VARCHAR(100),
     notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -484,6 +490,56 @@ CREATE TABLE IF NOT EXISTS targets (
     FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 27. Bank Accounts
+CREATE TABLE IF NOT EXISTS bank_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    distributor_id INT NOT NULL,
+    account_name VARCHAR(100) NOT NULL,
+    account_number VARCHAR(50) NOT NULL,
+    bank_name VARCHAR(100) NOT NULL,
+    branch VARCHAR(100),
+    initial_balance DOUBLE DEFAULT 0,
+    current_balance DOUBLE DEFAULT 0,
+    is_active INT DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 28. Cash Drawer Adjustments & Float Logs
+CREATE TABLE IF NOT EXISTS cash_drawer_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    distributor_id INT NOT NULL,
+    transaction_type ENUM('cash_in', 'cash_out') NOT NULL,
+    amount DOUBLE NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    performed_by VARCHAR(100),
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 29. Stock Movements & Inventory Transaction Ledger
+CREATE TABLE IF NOT EXISTS stock_movements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    distributor_id INT NOT NULL,
+    product_id INT NOT NULL,
+    movement_type ENUM('INWARD_GRN', 'OUTWARD_SALE', 'DISPATCH', 'DAMAGE_DISPOSAL', 'EXPIRED_WRITE_OFF', 'AUDIT_CORRECTION', 'RETURN_INWARD') NOT NULL,
+    quantity INT NOT NULL,
+    previous_stock INT NOT NULL,
+    new_stock INT NOT NULL,
+    unit_cost DOUBLE DEFAULT 0,
+    batch_number VARCHAR(100),
+    expiry_date DATE,
+    reference_number VARCHAR(100),
+    performed_by VARCHAR(100),
+    notes TEXT,
+    date DATE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Indexes for performance
 CREATE INDEX idx_distributors_code ON distributors(code);
 CREATE INDEX idx_dc_distributor ON distribution_centers(distributor_id);
@@ -508,5 +564,7 @@ CREATE INDEX idx_maintenance_vehicle ON maintenance(vehicle_id);
 CREATE INDEX idx_maintenance_date ON maintenance(service_date);
 CREATE INDEX idx_audit_created ON audit_logs(created_at);
 CREATE INDEX idx_targets_period ON targets(distributor_id, target_period, target_type);
+CREATE INDEX idx_stock_movements_prod ON stock_movements(product_id);
+CREATE INDEX idx_stock_movements_date ON stock_movements(date);
 
 SET FOREIGN_KEY_CHECKS = 1;

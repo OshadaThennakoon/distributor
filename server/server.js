@@ -11,6 +11,8 @@ import salesRoutes from './routes/salesRoutes.js';
 import financeRoutes from './routes/financeRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import dailyOperationsRoutes from './routes/dailyOperationsRoutes.js';
+import accountRoutes from './routes/accountRoutes.js';
+import stockRoutes from './routes/stockRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5055;
@@ -37,6 +39,8 @@ app.use('/api', shopRoutes);
 app.use('/api', vehicleRoutes);
 app.use('/api', salesRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/accounts', accountRoutes);
+app.use('/api/stock', stockRoutes);
 app.use('/api', reportRoutes);
 app.use('/api', dailyOperationsRoutes);
 
